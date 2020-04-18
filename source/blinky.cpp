@@ -29,6 +29,11 @@
 
 #include <assert.h>
 #include <string.h>
+#include "max30205.h"
+#include "max30205_cpp.h"
+I2C i2cBus(PC_1, PC_0);
+uint8_t i2c_addr = MAX30205_I2C_SLAVE_ADR_00;
+MAX30205 temp_sensor(i2cBus, i2c_addr);
 
 #define TRACE_GROUP "blky"
 
@@ -91,6 +96,16 @@ void Blinky::init(SimpleM2MClient &client, M2MResource *resource)
     if (!resource) {
         return;
     }
+
+	i2cBus.frequency(400000);
+    /* Configure for time out enabled, normal format, fault filter 6,
+       active low polarity, comparator mode, continuous
+     */
+    temp_sensor.write_cfg_reg(uint8_t(MAX30205_CFG_TIMEOUT_ENABLE |
+        MAX30205_CFG_NORMAL_FORMAT| MAX30205_CFG_FAULT_FILTER_6 |
+        MAX30205_CFG_OS_POLARITY_ACT_LOW | MAX30205_CFG_COMPARATOR_MODE |
+        MAX30205_CFG_CONTINUOUS));
+
 
     _client = &client;
     _button_resource = resource;
@@ -266,10 +281,14 @@ void Blinky::handle_automatic_increment()
 
     // this might be stopped now, but the loop should then be restarted after re-registration
     request_automatic_increment_event();
-
+	float temperature;
     if (_client->is_client_registered()) {
+
+		temperature = temp_sensor.read_reg_as_temperature(MAX30205_REG_TEMPERATURE);
+        printf("Pelion updated. Temperature = %3.4f Celsius, %3.4f Fahrenheit\r\n", 
+            temperature, temp_sensor.celsius_to_fahrenheit(temperature));
+
         _button_count = _button_resource->get_value_int() + 1;
-        _button_resource->set_value(_button_count);
-        printf("Button resource automatically updated. Value %d\r\n", _button_count);
+        _button_resource->set_value_float(temperature);
     }
 }

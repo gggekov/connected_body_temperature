@@ -263,7 +263,7 @@ void main_application(void)
 
 #ifndef MCC_MEMORY
     // Create resource for button count. Path of this resource will be: 3200/0/5501.
-    button_res = mbedClient.add_cloud_resource(3200, 0, 5501, "button_resource", M2MResourceInstance::INTEGER,
+    button_res = mbedClient.add_cloud_resource(3303, 0, 5700, "body_temperature_resource", M2MResourceInstance::FLOAT,
                               M2MBase::GET_PUT_ALLOWED, 0, true, (void*)counter_updated, (void*)notification_status_callback);
     button_res->set_value(0);
 
