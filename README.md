@@ -9,7 +9,7 @@ This repository contains an application of monitoring a body temparture sensor a
 3. Clone this repository.
 4. Download a developer certificate from your Pelion account. Place the certificate in the root of the project.
 5. Modify the `mbed_app.json` with the SSID and Password of your WiFi network.
-6. Compile the application `mbed compile -t GCC_ARM -m DISCO_L475VG_IOT01A `
+6. Compile the application `$ mbed compile -t GCC_ARM -m DISCO_L475VG_IOT01A `.
 7. Flash the development board with the generated binary file.
 7. Connect the sensor to the ST Discovery board. `SDA` pin from Fever click PCB is connected to `PC_1` of the IOT01 board and the `SCA` pin is connected to `PC_0`.
 8. Monitor your body temperature at the `/3303/0/5700` resource in [Pelion](https://portal.mbedcloud.com/). 
